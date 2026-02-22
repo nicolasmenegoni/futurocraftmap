@@ -16,8 +16,7 @@ public record MapSettings(
         double treeChance,
         double lakeChance,
         double pastureChance,
-        double houseChance,
-        int preloadRadiusChunks
+        double houseChance
 ) {
 
     public static MapSettings fromConfig(FileConfiguration config) {
@@ -44,10 +43,8 @@ public record MapSettings(
         double lakeChance = clamp(config.getDouble("features.lake-chance-per-chunk", 0.25), 0.0, 1.0);
         double pastureChance = clamp(config.getDouble("features.pasture-chance-per-chunk", 0.25), 0.0, 1.0);
         double houseChance = clamp(config.getDouble("features.house-chance-per-chunk", 0.07), 0.0, 1.0);
-        int preloadRadiusChunks = Math.max(2, config.getInt("map.preload-radius-chunks", 8));
-
         return new MapSettings(worldName, mapSize, waterLevel, borderSize, seaWidth, glassWallHeight, bedrockY,
-                stoneLayers, dirtLayers, surfaceY, treeChance, lakeChance, pastureChance, houseChance, preloadRadiusChunks);
+                stoneLayers, dirtLayers, surfaceY, treeChance, lakeChance, pastureChance, houseChance);
     }
 
     private static double clamp(double value, double min, double max) {

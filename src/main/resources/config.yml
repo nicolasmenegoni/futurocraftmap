@@ -7,7 +7,6 @@ map:
   border-size: 140
   sea-width: 80
   glass-wall-height: 24
-  preload-radius-chunks: 8
 
 layers:
   bedrock-y: 48

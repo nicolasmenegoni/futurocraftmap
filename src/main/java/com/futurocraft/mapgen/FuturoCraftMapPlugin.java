@@ -102,9 +102,11 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
     }
 
     private void preloadSpawnArea(World world) {
-        int radius = settings.preloadRadiusChunks();
-        for (int cx = -radius; cx <= radius; cx++) {
-            for (int cz = -radius; cz <= radius; cz++) {
+        int minChunk = (int) Math.floor((-settings.mapSize() / 2.0) / 16.0);
+        int maxChunk = (int) Math.floor((settings.mapSize() / 2.0) / 16.0);
+
+        for (int cx = minChunk; cx <= maxChunk; cx++) {
+            for (int cz = minChunk; cz <= maxChunk; cz++) {
                 mapApplier.applyChunk(world, world.getChunkAt(cx, cz));
             }
         }

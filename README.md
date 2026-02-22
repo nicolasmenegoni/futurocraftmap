@@ -38,7 +38,6 @@ map:
   border-size: 140
   sea-width: 80
   glass-wall-height: 24
-  preload-radius-chunks: 8
 
 layers:
   bedrock-y: 48
@@ -59,6 +58,9 @@ features:
 
 > Ao entrar/respawnar, o jogador é reposicionado no spawn seguro do mapa (0,0) para evitar nascer no vazio.
 
-> O plugin regenera os chunks do mapa no mundo normal conforme eles carregam e pré-gera a área central ao iniciar.
+> O plugin gera o mapa inteiro no startup (todos os chunks da área configurada), evitando atraso ao entrar.
 
 > Jogadores nascem em posições aleatórias nas praias (areia), sempre dentro da área do mapa.
+
+> Árvores são criadas conforme biomas do mapa (floresta, birch, taiga, jungle, savanna e cherry grove).
+> Animais aparecem espalhados, porém raramente.
