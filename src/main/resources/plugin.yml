@@ -1,0 +1,7 @@
+name: FuturoCraftMapGen
+version: 1.0.0
+main: com.futurocraft.mapgen.FuturoCraftMapPlugin
+api-version: '1.20'
+author: FuturoCraft
+load: STARTUP
+description: Gera mapa plano personalizado 1000x1000 com praias, árvores, lagos e pastos.
