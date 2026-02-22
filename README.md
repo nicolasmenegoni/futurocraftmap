@@ -1,6 +1,6 @@
 # FuturoCraftMapGen
 
-Plugin Paper/Spigot para gerar um mundo plano centralizado em `0,0,0` com:
+Plugin Paper/Spigot para gerar o mapa plano no mundo normal do servidor (ex.: `world`) centralizado em `0,0,0` com:
 
 - Área principal configurável (`map.size`, padrão `1000x1000`)
 - Camadas:
@@ -30,8 +30,7 @@ Jar gerado em `target/futurocraft-mapgen-1.0.0.jar`.
 
 ```yaml
 world:
-  name: "futuro_map"
-  auto-create: true
+  name: "world"
 
 map:
   size: 1000
@@ -53,3 +52,6 @@ features:
 ```
 
 > O spawn é ajustado para `0, surfaceY+1, 0`.
+
+
+> O plugin **não cria outro mundo**; ele aplica o gerador no mundo já existente configurado em `world.name`.

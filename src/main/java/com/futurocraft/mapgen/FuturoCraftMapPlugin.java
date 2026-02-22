@@ -3,7 +3,6 @@ package com.futurocraft.mapgen;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,13 +15,18 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         saveDefaultConfig();
         settings = MapSettings.fromConfig(getConfig());
 
-        if (settings.autoCreateWorld()) {
-            Bukkit.getScheduler().runTask(this, this::createOrLoadWorld);
-        }
-
         getServer().getPluginManager().registerEvents(new PlayerSpawnListener(this, settings), this);
 
-        getLogger().info("FuturoCraftMapGen habilitado.");
+        Bukkit.getScheduler().runTask(this, () -> {
+            World world = getTargetWorld();
+            if (world != null) {
+                world.setSpawnLocation(new Location(world, 0.5, settings.surfaceY() + 1.0, 0.5));
+            } else {
+                getLogger().warning("Mundo alvo não encontrado: " + settings.worldName());
+            }
+        });
+
+        getLogger().info("FuturoCraftMapGen habilitado no mundo existente.");
     }
 
     @Override
@@ -34,20 +38,11 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         return new FuturoFlatGenerator(this, settings);
     }
 
-    public World createOrLoadWorld() {
-        String worldName = settings.worldName();
-        World existing = Bukkit.getWorld(worldName);
-        if (existing != null) {
-            existing.setSpawnLocation(new Location(existing, 0.5, settings.surfaceY() + 1.0, 0.5));
-            return existing;
+    public World getTargetWorld() {
+        World byName = Bukkit.getWorld(settings.worldName());
+        if (byName != null) {
+            return byName;
         }
-
-        WorldCreator creator = new WorldCreator(worldName);
-        creator.generator(new FuturoFlatGenerator(this, settings));
-        World world = creator.createWorld();
-        if (world != null) {
-            world.setSpawnLocation(new Location(world, 0.5, settings.surfaceY() + 1.0, 0.5));
-        }
-        return world;
+        return Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().get(0);
     }
 }

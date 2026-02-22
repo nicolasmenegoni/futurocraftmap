@@ -1,6 +1,5 @@
 world:
-  name: "futuro_map"
-  auto-create: true
+  name: "world"
 
 map:
   size: 1000

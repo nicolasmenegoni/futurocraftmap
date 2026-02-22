@@ -4,7 +4,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public record MapSettings(
         String worldName,
-        boolean autoCreateWorld,
         int mapSize,
         int waterLevel,
         int borderSize,
@@ -21,8 +20,7 @@ public record MapSettings(
 ) {
 
     public static MapSettings fromConfig(FileConfiguration config) {
-        String worldName = config.getString("world.name", "futuro_map");
-        boolean autoCreate = config.getBoolean("world.auto-create", true);
+        String worldName = config.getString("world.name", "world");
         int mapSize = Math.max(128, config.getInt("map.size", 1000));
         int waterLevel = Math.max(6, config.getInt("map.water-level", 58));
         int borderSize = Math.max(24, config.getInt("map.border-size", 140));
@@ -46,7 +44,7 @@ public record MapSettings(
         double pastureChance = clamp(config.getDouble("features.pasture-chance-per-chunk", 0.25), 0.0, 1.0);
         double houseChance = clamp(config.getDouble("features.house-chance-per-chunk", 0.07), 0.0, 1.0);
 
-        return new MapSettings(worldName, autoCreate, mapSize, waterLevel, borderSize, seaWidth, glassWallHeight, bedrockY,
+        return new MapSettings(worldName, mapSize, waterLevel, borderSize, seaWidth, glassWallHeight, bedrockY,
                 stoneLayers, dirtLayers, surfaceY, treeChance, lakeChance, pastureChance, houseChance);
     }
 

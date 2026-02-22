@@ -25,15 +25,12 @@ public class PlayerSpawnListener implements Listener {
         Player player = event.getPlayer();
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            World target = Bukkit.getWorld(settings.worldName());
-            if (target == null) {
-                target = plugin.createOrLoadWorld();
-            }
+            World target = plugin.getTargetWorld();
             if (target == null) {
                 return;
             }
 
-            if (!player.getWorld().getName().equalsIgnoreCase(settings.worldName())) {
+            if (!player.getWorld().getUID().equals(target.getUID())) {
                 player.teleport(spawnLocation(target));
             }
         });
@@ -41,10 +38,7 @@ public class PlayerSpawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        World target = Bukkit.getWorld(settings.worldName());
-        if (target == null) {
-            target = plugin.createOrLoadWorld();
-        }
+        World target = plugin.getTargetWorld();
         if (target != null) {
             event.setRespawnLocation(spawnLocation(target));
         }
