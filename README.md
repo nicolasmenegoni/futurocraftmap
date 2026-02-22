@@ -16,7 +16,7 @@ Plugin Paper/Spigot para gerar o mapa plano no mundo normal do servidor (ex.: `w
 - Bordas em formato de praia e mar:
   - Praia de areia (sem terra)
   - Faixa de mar maior configurável
-  - Muro de vidro ao redor de todo o mapa
+  - Muro de vidro ao redor de todo o mapa (do bedrock até o topo)
 
 ## Build
 
@@ -60,3 +60,5 @@ features:
 > Ao entrar/respawnar, o jogador é reposicionado no spawn seguro do mapa (0,0) para evitar nascer no vazio.
 
 > O plugin regenera os chunks do mapa no mundo normal conforme eles carregam e pré-gera a área central ao iniciar.
+
+> Jogadores nascem em posições aleatórias nas praias (areia), sempre dentro da área do mapa.

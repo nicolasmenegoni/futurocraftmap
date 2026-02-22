@@ -3,11 +3,22 @@ package com.futurocraft.mapgen;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 
 import java.util.Random;
 
 public class RuntimeMapApplier {
+
+    private static final Material[] LOGS = {
+            Material.OAK_LOG, Material.BIRCH_LOG, Material.SPRUCE_LOG,
+            Material.JUNGLE_LOG, Material.ACACIA_LOG, Material.DARK_OAK_LOG,
+            Material.MANGROVE_LOG, Material.CHERRY_LOG
+    };
+
+    private static final Material[] LEAVES = {
+            Material.OAK_LEAVES, Material.BIRCH_LEAVES, Material.SPRUCE_LEAVES,
+            Material.JUNGLE_LEAVES, Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES,
+            Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES
+    };
 
     private final MapSettings settings;
 
@@ -22,7 +33,7 @@ public class RuntimeMapApplier {
         int maxZ = settings.mapSize() / 2;
 
         int minY = world.getMinHeight();
-        int maxY = Math.min(world.getMaxHeight() - 1, settings.waterLevel() + settings.glassWallHeight() + 6);
+        int maxY = Math.min(world.getMaxHeight() - 1, settings.waterLevel() + settings.glassWallHeight() + 8);
 
         Random random = new Random((((long) chunk.getX()) << 32) ^ chunk.getZ() ^ world.getSeed());
 
@@ -59,14 +70,128 @@ public class RuntimeMapApplier {
 
                 if (worldX == minX || worldX == maxX || worldZ == minZ || worldZ == maxZ) {
                     int wallTop = settings.waterLevel() + settings.glassWallHeight();
-                    for (int y = settings.waterLevel() + 1; y <= wallTop; y++) {
+                    for (int y = settings.bedrockY(); y <= wallTop; y++) {
                         world.getBlockAt(worldX, y, worldZ).setType(Material.GLASS, false);
                     }
                 }
             }
         }
 
-        new SurfaceFeaturePopulator(settings).populate(world, random, chunk);
+        placeChunkFeatures(world, chunk, random);
+    }
+
+    private void placeChunkFeatures(World world, Chunk chunk, Random random) {
+        if (!isInteriorChunk(chunk)) {
+            return;
+        }
+
+        int attempts = 6;
+        for (int i = 0; i < attempts; i++) {
+            if (random.nextDouble() < settings.treeChance()) {
+                placeTree(world, chunk, random);
+            }
+        }
+
+        if (random.nextDouble() < settings.lakeChance()) {
+            placeLake(world, chunk, random);
+        }
+
+        if (random.nextDouble() < settings.houseChance()) {
+            placeHouse(world, chunk, random);
+        }
+    }
+
+    private boolean isInteriorChunk(Chunk chunk) {
+        int chunkCenterX = (chunk.getX() << 4) + 8;
+        int chunkCenterZ = (chunk.getZ() << 4) + 8;
+        int half = settings.mapSize() / 2;
+        int margin = settings.borderSize() + 24;
+        return chunkCenterX > (-half + margin)
+                && chunkCenterX < (half - margin)
+                && chunkCenterZ > (-half + margin)
+                && chunkCenterZ < (half - margin);
+    }
+
+    private void placeTree(World world, Chunk chunk, Random random) {
+        int x = (chunk.getX() << 4) + random.nextInt(16);
+        int z = (chunk.getZ() << 4) + random.nextInt(16);
+        int y = topSolidY(world, x, z);
+        if (world.getBlockAt(x, y, z).getType() != Material.GRASS_BLOCK) return;
+
+        Material log = LOGS[random.nextInt(LOGS.length)];
+        Material leaves = LEAVES[random.nextInt(LEAVES.length)];
+        int trunkBase = y + 1;
+        int height = 4 + random.nextInt(3);
+
+        for (int i = 0; i < height; i++) {
+            world.getBlockAt(x, trunkBase + i, z).setType(log, false);
+        }
+
+        int canopyY = trunkBase + height - 1;
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                for (int dy = 0; dy <= 2; dy++) {
+                    if (Math.abs(dx) + Math.abs(dz) > 3 && dy == 0) continue;
+                    Material current = world.getBlockAt(x + dx, canopyY + dy, z + dz).getType();
+                    if (current == Material.AIR || current == Material.SHORT_GRASS || current == Material.TALL_GRASS) {
+                        world.getBlockAt(x + dx, canopyY + dy, z + dz).setType(leaves, false);
+                    }
+                }
+            }
+        }
+    }
+
+    private void placeLake(World world, Chunk chunk, Random random) {
+        int cx = (chunk.getX() << 4) + 4 + random.nextInt(8);
+        int cz = (chunk.getZ() << 4) + 4 + random.nextInt(8);
+        int radius = 2 + random.nextInt(3);
+
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                if ((dx * dx) + (dz * dz) > radius * radius) continue;
+                int x = cx + dx;
+                int z = cz + dz;
+                int y = topSolidY(world, x, z);
+                Material ground = world.getBlockAt(x, y, z).getType();
+                if (ground != Material.GRASS_BLOCK && ground != Material.DIRT) continue;
+                world.getBlockAt(x, y, z).setType(Material.WATER, false);
+                world.getBlockAt(x, y - 1, z).setType(Material.SAND, false);
+                world.getBlockAt(x, y + 1, z).setType(Material.AIR, false);
+            }
+        }
+    }
+
+    private void placeHouse(World world, Chunk chunk, Random random) {
+        int x = (chunk.getX() << 4) + 3 + random.nextInt(6);
+        int z = (chunk.getZ() << 4) + 3 + random.nextInt(6);
+        int y = topSolidY(world, x, z);
+        if (world.getBlockAt(x, y, z).getType() != Material.GRASS_BLOCK) return;
+
+        Material wall = random.nextBoolean() ? Material.OAK_PLANKS : Material.COBBLESTONE;
+        Material roof = random.nextBoolean() ? Material.SPRUCE_PLANKS : Material.BRICKS;
+
+        int w = 5, l = 5, h = 4;
+        for (int dx = 0; dx < w; dx++) {
+            for (int dz = 0; dz < l; dz++) {
+                world.getBlockAt(x + dx, y, z + dz).setType(Material.OAK_PLANKS, false);
+                for (int dy = 1; dy <= h; dy++) {
+                    boolean edge = dx == 0 || dz == 0 || dx == w - 1 || dz == l - 1;
+                    world.getBlockAt(x + dx, y + dy, z + dz).setType(edge ? wall : Material.AIR, false);
+                }
+                world.getBlockAt(x + dx, y + h + 1, z + dz).setType(roof, false);
+            }
+        }
+        world.getBlockAt(x + 2, y + 1, z).setType(Material.AIR, false);
+        world.getBlockAt(x + 2, y + 2, z).setType(Material.AIR, false);
+    }
+
+    private int topSolidY(World world, int x, int z) {
+        for (int y = settings.surfaceY() + 8; y >= settings.bedrockY(); y--) {
+            if (!world.getBlockAt(x, y, z).isEmpty() && !world.getBlockAt(x, y, z).isLiquid()) {
+                return y;
+            }
+        }
+        return settings.surfaceY();
     }
 
     private int computeGroundY(int edgeDistance) {

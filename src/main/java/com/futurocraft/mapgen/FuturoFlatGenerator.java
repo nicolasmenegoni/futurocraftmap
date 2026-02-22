@@ -59,7 +59,7 @@ public class FuturoFlatGenerator extends ChunkGenerator {
 
                 if (isWallEdge(worldX, worldZ, minX, maxX, minZ, maxZ)) {
                     int wallTop = settings.waterLevel() + settings.glassWallHeight();
-                    for (int y = settings.waterLevel() + 1; y <= wallTop; y++) {
+                    for (int y = settings.bedrockY(); y <= wallTop; y++) {
                         chunkData.setBlock(x, y, z, Material.GLASS);
                     }
                 }
