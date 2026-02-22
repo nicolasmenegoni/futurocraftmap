@@ -1,0 +1,21 @@
+world:
+  name: "world"
+
+map:
+  size: 1000
+  water-level: 58
+  border-size: 140
+  sea-width: 80
+  glass-wall-height: 24
+  preload-radius-chunks: 8
+
+layers:
+  bedrock-y: 48
+  stone: 10
+  dirt: 4
+
+features:
+  tree-chance-per-chunk: 0.95
+  lake-chance-per-chunk: 0.25
+  pasture-chance-per-chunk: 0.25
+  house-chance-per-chunk: 0.07
