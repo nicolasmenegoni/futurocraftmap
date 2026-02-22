@@ -20,6 +20,8 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
             Bukkit.getScheduler().runTask(this, this::createOrLoadWorld);
         }
 
+        getServer().getPluginManager().registerEvents(new PlayerSpawnListener(this, settings), this);
+
         getLogger().info("FuturoCraftMapGen habilitado.");
     }
 
@@ -32,19 +34,20 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         return new FuturoFlatGenerator(this, settings);
     }
 
-    public void createOrLoadWorld() {
+    public World createOrLoadWorld() {
         String worldName = settings.worldName();
         World existing = Bukkit.getWorld(worldName);
         if (existing != null) {
-            existing.setSpawnLocation(new Location(existing, 0.0, settings.surfaceY() + 1.0, 0.0));
-            return;
+            existing.setSpawnLocation(new Location(existing, 0.5, settings.surfaceY() + 1.0, 0.5));
+            return existing;
         }
 
         WorldCreator creator = new WorldCreator(worldName);
         creator.generator(new FuturoFlatGenerator(this, settings));
         World world = creator.createWorld();
         if (world != null) {
-            world.setSpawnLocation(new Location(world, 0.0, settings.surfaceY() + 1.0, 0.0));
+            world.setSpawnLocation(new Location(world, 0.5, settings.surfaceY() + 1.0, 0.5));
         }
+        return world;
     }
 }
