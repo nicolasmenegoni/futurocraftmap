@@ -1,7 +1,6 @@
-name: FuturoCraftMapGen
+name: FuturoCraftBlockLifecycle
 version: 1.0.0
-main: com.futurocraft.mapgen.FuturoCraftMapPlugin
+main: com.futurocraft.mapgen.BlockLifecyclePlugin
 api-version: '1.20'
 author: FuturoCraft
-load: POSTWORLD
-description: Gera mapa plano personalizado 1000x1000 com praias, árvores, lagos e pastos.
+description: Regenera blocos naturais e remove blocos de jogadores por inatividade de chunks.
