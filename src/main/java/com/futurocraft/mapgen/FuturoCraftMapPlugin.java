@@ -17,7 +17,7 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         settings = MapSettings.fromConfig(getConfig());
 
         if (settings.autoCreateWorld()) {
-            createOrLoadWorld();
+            Bukkit.getScheduler().runTask(this, this::createOrLoadWorld);
         }
 
         getLogger().info("FuturoCraftMapGen habilitado.");
