@@ -37,7 +37,7 @@ map:
   border-size: 80
 
 layers:
-  bedrock-y: 0
+  bedrock-y: 48
   stone: 10
   dirt: 4
 
@@ -48,3 +48,5 @@ features:
 ```
 
 > O spawn é ajustado para `0, surfaceY+1, 0`.
+
+> Se `bedrock-y` estiver muito baixo para o `water-level`, o plugin ajusta internamente a base para manter a superfície seca no miolo do mapa.

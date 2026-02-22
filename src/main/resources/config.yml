@@ -8,7 +8,7 @@ map:
   border-size: 80
 
 layers:
-  bedrock-y: 0
+  bedrock-y: 48
   stone: 10
   dirt: 4
 

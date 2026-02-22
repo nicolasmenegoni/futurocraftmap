@@ -24,9 +24,12 @@ public record MapSettings(
         int waterLevel = Math.max(6, config.getInt("map.water-level", 58));
         int borderSize = Math.max(16, config.getInt("map.border-size", 80));
 
-        int bedrockY = Math.max(0, config.getInt("layers.bedrock-y", 0));
+        int requestedBedrockY = Math.max(0, config.getInt("layers.bedrock-y", 0));
         int stoneLayers = Math.max(1, config.getInt("layers.stone", 10));
         int dirtLayers = Math.max(1, config.getInt("layers.dirt", 4));
+
+        int minBedrockForDrySurface = Math.max(0, (waterLevel + 2) - (stoneLayers + dirtLayers));
+        int bedrockY = Math.max(requestedBedrockY, minBedrockForDrySurface);
 
         int surfaceY = bedrockY + stoneLayers + dirtLayers;
 
