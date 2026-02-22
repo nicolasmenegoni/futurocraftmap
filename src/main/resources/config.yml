@@ -5,7 +5,9 @@ world:
 map:
   size: 1000
   water-level: 58
-  border-size: 80
+  border-size: 140
+  sea-width: 80
+  glass-wall-height: 24
 
 layers:
   bedrock-y: 48
@@ -13,6 +15,7 @@ layers:
   dirt: 4
 
 features:
-  tree-chance-per-chunk: 0.65
-  lake-chance-per-chunk: 0.08
-  pasture-chance-per-chunk: 0.20
+  tree-chance-per-chunk: 0.95
+  lake-chance-per-chunk: 0.25
+  pasture-chance-per-chunk: 0.25
+  house-chance-per-chunk: 0.07

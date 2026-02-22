@@ -9,10 +9,14 @@ Plugin Paper/Spigot para gerar um mundo plano centralizado em `0,0,0` com:
   - Dirt
   - Grass Block na superfície
 - Recursos de superfície:
-  - Árvores aleatórias (vários tipos do Minecraft)
+  - Árvores artificiais aleatórias
   - Laginhos
   - Pastos (grama alta e flores)
-- Bordas em formato de praia (descendo para areia + água)
+  - Casinhas simples com variações
+- Bordas em formato de praia e mar:
+  - Praia de areia (sem terra)
+  - Faixa de mar maior configurável
+  - Muro de vidro ao redor de todo o mapa
 
 ## Build
 
@@ -24,8 +28,6 @@ Jar gerado em `target/futurocraft-mapgen-1.0.0.jar`.
 
 ## Configuração
 
-Arquivo `config.yml`:
-
 ```yaml
 world:
   name: "futuro_map"
@@ -34,7 +36,9 @@ world:
 map:
   size: 1000
   water-level: 58
-  border-size: 80
+  border-size: 140
+  sea-width: 80
+  glass-wall-height: 24
 
 layers:
   bedrock-y: 48
@@ -42,11 +46,10 @@ layers:
   dirt: 4
 
 features:
-  tree-chance-per-chunk: 0.65
-  lake-chance-per-chunk: 0.08
-  pasture-chance-per-chunk: 0.20
+  tree-chance-per-chunk: 0.95
+  lake-chance-per-chunk: 0.25
+  pasture-chance-per-chunk: 0.25
+  house-chance-per-chunk: 0.07
 ```
 
 > O spawn é ajustado para `0, surfaceY+1, 0`.
-
-> Se `bedrock-y` estiver muito baixo para o `water-level`, o plugin ajusta internamente a base para manter a superfície seca no miolo do mapa.

@@ -47,13 +47,20 @@ public class FuturoFlatGenerator extends ChunkGenerator {
                 chunkData.setBlock(x, settings.bedrockY(), z, Material.BEDROCK);
 
                 for (int y = settings.bedrockY() + 1; y <= groundY; y++) {
-                    Material material = layerMaterial(y, groundY, random);
+                    Material material = layerMaterial(y, groundY, edgeDistance, random);
                     chunkData.setBlock(x, y, z, material);
                 }
 
                 if (groundY < settings.waterLevel()) {
                     for (int y = groundY + 1; y <= settings.waterLevel(); y++) {
                         chunkData.setBlock(x, y, z, Material.WATER);
+                    }
+                }
+
+                if (isWallEdge(worldX, worldZ, minX, maxX, minZ, maxZ)) {
+                    int wallTop = settings.waterLevel() + settings.glassWallHeight();
+                    for (int y = settings.waterLevel() + 1; y <= wallTop; y++) {
+                        chunkData.setBlock(x, y, z, Material.GLASS);
                     }
                 }
             }
@@ -67,29 +74,41 @@ public class FuturoFlatGenerator extends ChunkGenerator {
 
     private int computeGroundY(int edgeDistance) {
         int surfaceY = settings.surfaceY();
-        if (edgeDistance >= settings.borderSize()) {
-            return surfaceY;
+
+        if (edgeDistance < settings.seaWidth()) {
+            return settings.waterLevel() - 4;
         }
 
-        double ratio = (double) edgeDistance / (double) settings.borderSize();
-        int targetBeachHeight = settings.waterLevel() - 2;
-        return (int) Math.round(targetBeachHeight + (surfaceY - targetBeachHeight) * ratio);
+        if (edgeDistance < settings.borderSize()) {
+            int beachWidth = settings.borderSize() - settings.seaWidth();
+            double ratio = (double) (edgeDistance - settings.seaWidth()) / (double) beachWidth;
+            int beachStart = settings.waterLevel() - 1;
+            return (int) Math.round(beachStart + (surfaceY - beachStart) * ratio);
+        }
+
+        return surfaceY;
     }
 
-    private Material layerMaterial(int y, int groundY, Random random) {
+    private Material layerMaterial(int y, int groundY, int edgeDistance, Random random) {
+        boolean beachZone = edgeDistance < settings.borderSize();
+
         if (y == groundY) {
-            return groundY >= settings.waterLevel() ? Material.GRASS_BLOCK : Material.SAND;
+            return beachZone ? Material.SAND : Material.GRASS_BLOCK;
         }
 
         int dirtStart = groundY - settings.dirtLayers();
         if (y > dirtStart) {
-            return groundY >= settings.waterLevel() ? Material.DIRT : Material.SAND;
+            return beachZone ? Material.SAND : Material.DIRT;
         }
 
         if (random.nextDouble() < oreChance(y)) {
             return randomOre(random);
         }
         return Material.STONE;
+    }
+
+    private boolean isWallEdge(int worldX, int worldZ, int minX, int maxX, int minZ, int maxZ) {
+        return worldX == minX || worldX == maxX || worldZ == minZ || worldZ == maxZ;
     }
 
     private double oreChance(int y) {
