@@ -27,9 +27,7 @@ public class PlayerSpawnListener implements Listener {
                 return;
             }
 
-            if (!player.getWorld().getUID().equals(target.getUID())) {
-                player.teleport(plugin.getSafeSpawnLocation(target));
-            }
+            player.teleport(plugin.getSafeSpawnLocation(target));
         });
     }
 

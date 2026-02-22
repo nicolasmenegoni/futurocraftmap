@@ -58,8 +58,20 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         Block ground = world.getBlockAt(x, y - 1, z);
         if (ground.getType() == Material.AIR || ground.isLiquid()) {
             y = settings.surfaceY() + 1;
+            ensureSpawnPlatform(world, x, y - 1, z);
         }
 
         return new Location(world, x + 0.5, y, z + 0.5);
+    }
+
+    private void ensureSpawnPlatform(World world, int centerX, int groundY, int centerZ) {
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                world.getBlockAt(centerX + dx, groundY - 1, centerZ + dz).setType(Material.DIRT, false);
+                world.getBlockAt(centerX + dx, groundY, centerZ + dz).setType(Material.GRASS_BLOCK, false);
+                world.getBlockAt(centerX + dx, groundY + 1, centerZ + dz).setType(Material.AIR, false);
+                world.getBlockAt(centerX + dx, groundY + 2, centerZ + dz).setType(Material.AIR, false);
+            }
+        }
     }
 }

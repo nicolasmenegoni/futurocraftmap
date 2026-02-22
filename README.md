@@ -55,3 +55,5 @@ features:
 
 
 > O plugin **não cria outro mundo**; ele aplica o gerador no mundo já existente configurado em `world.name`.
+
+> Ao entrar/respawnar, o jogador é reposicionado no spawn seguro do mapa (0,0) para evitar nascer no vazio.
