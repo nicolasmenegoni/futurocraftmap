@@ -46,6 +46,8 @@ public class ChunkActivityListener implements Listener {
         long nowTick = storage.getWorldTick(to.getWorld());
 
         storage.upsertChunkActivity(world, chunkX, chunkZ, nowMs, nowTick);
-        storage.touchOwnerVisitsForChunk(world, chunkX, chunkZ, player.getUniqueId(), nowMs, nowTick);
+        if (!player.isOp()) {
+            storage.touchOwnerVisitsForChunk(world, chunkX, chunkZ, player.getUniqueId(), nowMs, nowTick);
+        }
     }
 }

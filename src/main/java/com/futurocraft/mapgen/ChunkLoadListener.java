@@ -51,7 +51,8 @@ public class ChunkLoadListener implements Listener {
 
     private boolean hasExpired(long savedMs, long savedTick, long nowMs, long nowTick, long threshold) {
         if (plugin.useRealTime()) {
-            return (nowMs - savedMs) >= threshold * 60L * 60L * 1000L;
+            long unitMs = plugin.useRealMinutes() ? 60L * 1000L : 60L * 60L * 1000L;
+            return (nowMs - savedMs) >= threshold * unitMs;
         }
         return (nowTick - savedTick) >= threshold;
     }

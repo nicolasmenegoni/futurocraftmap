@@ -40,4 +40,9 @@ public class BlockLifecyclePlugin extends JavaPlugin {
         String mode = getConfig().getString("time.mode", "REAL_HOURS");
         return !"TICKS".equalsIgnoreCase(mode);
     }
+
+    public boolean useRealMinutes() {
+        String mode = getConfig().getString("time.mode", "REAL_HOURS");
+        return "REAL_MINUTES".equalsIgnoreCase(mode);
+    }
 }
