@@ -17,7 +17,7 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         settings = MapSettings.fromConfig(getConfig());
 
         if (settings.autoCreateWorld()) {
-            createOrLoadWorld();
+            Bukkit.getScheduler().runTask(this, this::createOrLoadWorld);
         }
 
         getLogger().info("FuturoCraftMapGen habilitado.");
@@ -25,6 +25,10 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        if (settings == null) {
+            saveDefaultConfig();
+            settings = MapSettings.fromConfig(getConfig());
+        }
         return new FuturoFlatGenerator(this, settings);
     }
 
