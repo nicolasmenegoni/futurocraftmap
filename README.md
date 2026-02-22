@@ -38,6 +38,7 @@ map:
   border-size: 140
   sea-width: 80
   glass-wall-height: 24
+  preload-radius-chunks: 8
 
 layers:
   bedrock-y: 48
@@ -57,3 +58,5 @@ features:
 > O plugin **não cria outro mundo**; ele aplica o gerador no mundo já existente configurado em `world.name`.
 
 > Ao entrar/respawnar, o jogador é reposicionado no spawn seguro do mapa (0,0) para evitar nascer no vazio.
+
+> O plugin regenera os chunks do mapa no mundo normal conforme eles carregam e pré-gera a área central ao iniciar.

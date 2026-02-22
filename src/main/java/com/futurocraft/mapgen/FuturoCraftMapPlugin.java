@@ -11,17 +11,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class FuturoCraftMapPlugin extends JavaPlugin {
 
     private MapSettings settings;
+    private RuntimeMapApplier mapApplier;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         settings = MapSettings.fromConfig(getConfig());
+        mapApplier = new RuntimeMapApplier(settings);
 
         getServer().getPluginManager().registerEvents(new PlayerSpawnListener(this), this);
+        getServer().getPluginManager().registerEvents(new ChunkRegeneratorListener(this), this);
 
         Bukkit.getScheduler().runTask(this, () -> {
             World world = getTargetWorld();
             if (world != null) {
+                preloadSpawnArea(world);
                 world.setSpawnLocation(getSafeSpawnLocation(world));
             } else {
                 getLogger().warning("Mundo alvo não encontrado: " + settings.worldName());
@@ -48,6 +52,10 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         return Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().get(0);
     }
 
+    public RuntimeMapApplier getMapApplier() {
+        return mapApplier;
+    }
+
     public Location getSafeSpawnLocation(World world) {
         int x = 0;
         int z = 0;
@@ -62,6 +70,15 @@ public class FuturoCraftMapPlugin extends JavaPlugin {
         }
 
         return new Location(world, x + 0.5, y, z + 0.5);
+    }
+
+    private void preloadSpawnArea(World world) {
+        int radius = settings.preloadRadiusChunks();
+        for (int cx = -radius; cx <= radius; cx++) {
+            for (int cz = -radius; cz <= radius; cz++) {
+                mapApplier.applyChunk(world, world.getChunkAt(cx, cz));
+            }
+        }
     }
 
     private void ensureSpawnPlatform(World world, int centerX, int groundY, int centerZ) {
